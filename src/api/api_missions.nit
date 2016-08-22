@@ -16,6 +16,7 @@ module api_missions
 
 import model
 import api::api_tracks
+import api::engine_configuration
 
 redef class APIRouter
 	redef init do
@@ -35,6 +36,40 @@ end
 
 class APIMission
 	super MissionHandler
+	super AuthHandler
+
+	redef fun post(req, res) do
+		var player = get_player(req, res)
+		if player == null then return
+		var mission = get_mission(req, res)
+		if mission == null then return
+		var post = req.post_args
+		if not post.has_key("source") then
+			res.error 400
+			print "No code provided for submission"
+			return
+		end
+		var code = post["source"]
+		if not post.has_key("lang") then
+			res.error 400
+			print "No lang provided for submission"
+			return
+		end
+		var engine = post["lang"]
+		if not config.engine_map.has_key(engine) then
+			res.error 400
+			print "Unknown language '{engine}'"
+			return
+		end
+		var runner = config.engine_map[engine]
+		var program = new Program(player, mission, code)
+		runner.run(program)
+
+		program.update_status(config)
+
+		res.json program.produce_summary
+		program.clean_artefacts
+	end
 
 	redef fun get(req, res) do
 		var mission = get_mission(req, res)
