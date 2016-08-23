@@ -82,6 +82,11 @@
 						.success(cb)
 						.error(cbErr);
 				},
+				submitMission: function(missionId, data, cb, cbErr) {
+					$http.post(apiUrl + '/missions/' + missionId, data)
+						.success(cb)
+						.error(cbErr);
+				},
 				getMissionStatus: function(login, missionId, cb, cbErr) {
 					$http.get(apiUrl + '/players/' + login + '/missions/' + missionId)
 						.success(cb)

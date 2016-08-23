@@ -1,5 +1,5 @@
-<div>
-	<h3>{{missionCtrl.missionStatus.mission.title}}</h3>
+<div ng-controller="MissionsCtrl">
+	<h3>{{mission.title}}</h3>
 
 	<table class='table'>
 		<tr>
@@ -28,4 +28,5 @@
 		<p><textarea name="source" class="form-control source-submission" rows="20" ng-model="source"></textarea></p>
 		<button type="submit" class="btn btn-success">Submit</button>
 	</form>
+	<pre>{{ mission | json }}</pre>
 </div>

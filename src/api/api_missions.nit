@@ -35,10 +35,15 @@ end
 
 class APIMission
 	super MissionHandler
+	super PlayerHandler
 
 	redef fun get(req, res) do
 		var mission = get_mission(req, res)
 		if mission == null then return
 		res.json mission
+	end
+
+	redef fun post(req, res)
+	do
 	end
 end
