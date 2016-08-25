@@ -23,6 +23,8 @@
 				$scope.playerId = $rootScope.session._id;
 			}
 			$scope.missionId = $routeParams.mid;
+			console.log($scope.missionId);
+			$scope.mid = $scope.missionId;
 		}])
 
 		.controller('MissionCtrl', ['Missions', function(Missions) {
@@ -36,6 +38,26 @@
 			};
 
 			this.loadMission();
+
+		}])
+
+		.controller('MissionSubmitCtrl', ['Missions', '$scope', function (Missions, $scope) {
+			$scope.source = "";
+			$scope.lang = "pep8";
+			$scope.engine = "pep8term";
+
+			$scope.submit = function () {
+				var data = {
+					source: $scope.source,
+					lang: $scope.lang,
+					engine: $scope.engine
+				};
+				Missions.sendMissionSubmission(data, $scope.missionId, function (data) {
+					$scope.source = data;
+				}, function () {
+					console.log("err");
+				});
+			};
 		}])
 
 		.directive('mission', [function() {
@@ -70,6 +92,17 @@
 				restrict: 'E',
 				replace: true,
 				templateUrl: '/directives/player/mission.html',
+			};
+		}])
+
+		.directive('missionSubmit', [function () {
+			return {
+				transclude: true,
+				scope: {
+					missionId: '=missionId'
+				},
+				restrict: 'E',
+				templateUrl: '/directives/missions/submit.html'
 			};
 		}])
 })();
