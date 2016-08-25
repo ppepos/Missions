@@ -86,6 +86,26 @@ class Program
 
 		config.missions_status.save(mission_status)
 	end
+
+	# Produces a JSON summary of the execution of `self`
+	fun produce_summary: String do
+		var ret_str = new Buffer
+		ret_str.append "\{\n"
+		ret_str.append "\"success\": {test_errors == 0 and not compilation_failed},\n"
+		ret_str.append "\"compilation_failed\": {compilation_failed},\n"
+		ret_str.append "\"compilation_messages\": {compilation_messages.to_json},\n"
+		ret_str.append "\"results\" : \n["
+		var ret_strs = new Array[String]
+		for test, res in results do
+			var err = res.error
+			var err_msg = ""
+			if err != null then err_msg = err.to_json
+			ret_strs.add "\{\"success\": {err_msg == ""}, \"message\": \"{err_msg}\"\}"
+		end
+		ret_str.append(ret_strs.join(","))
+		ret_str.append "]\n\}"
+		return ret_str.to_s
+	end
 end
 
 redef class MissionStar
