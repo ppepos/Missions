@@ -108,6 +108,18 @@ class Program
 	end
 end
 
+# This model provides easy deserialization of posted submissions
+class Submission
+	serialize
+
+	# Source code to be run
+	var source: String
+	# Engine or runner to be used
+	var engine: String
+	# Language in which the source code is writte
+	var lang: String
+end
+
 redef class MissionStar
 	# Check if the star is unlocked for the `program`
 	# Also update `status`
