@@ -28,6 +28,9 @@ populate:
 	nitc src/db_loader.nit -m src/db_loader_serial.nit -o bin/db_loader
 	bin/db_loader $(level)
 
+init_db:
+	sqlite3 db/db.sqlite3 < db/init.sql
+
 run:
 	bin/app
 
