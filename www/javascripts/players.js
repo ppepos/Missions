@@ -18,14 +18,14 @@
 	angular
 		.module('players', ['ngSanitize', 'model'])
 
-		.controller('PlayerHome', ['$routeParams', '$scope', function($routeParams, $scope) {
-			$scope.playerId = $routeParams.login;
+		.controller('PlayerHome', ['$stateParams', '$scope', function($stateParams, $scope) {
+			$scope.playerId = $stateParams.login;
 		}])
 
-		.controller('PlayerAuth', ['$routeParams', '$rootScope', '$scope', function($routeParams, $rootScope, $scope) {
+		.controller('PlayerAuth', ['$stateParams', '$rootScope', '$scope', function($stateParams, $rootScope, $scope) {
 
 			$scope.playerId = $rootScope.session._id;
-			$scope.notifId = $routeParams.nid;
+			$scope.notifId = $stateParams.nid;
 		}])
 
 		.factory('Errors', ['$rootScope', function($rootScope) {
@@ -89,12 +89,12 @@
 		}])
 
 		.controller('PlayersCtrl', ['Errors', 'Players', function(Errors, Players) {
-			$controller = this;
+			var vm = this;
 
-			this.loadPlayers = function() {
+			vm.loadPlayers = function() {
 				Players.getPlayers(
 					function(data) {
-						$controller.players = data;
+						vm.players = data;
 					}, Errors.handleError);
 			};
 		}])

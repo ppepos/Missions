@@ -5,10 +5,10 @@
 		</a>
 		<ul class="dropdown-menu dropdown-menu-right">
 			<li>
-				<a href="/login"><span class="octicon octicon-mark-github" /> Github... </a>
+				<a ui-sref="login"><span class="octicon octicon-mark-github" /> Github... </a>
 			</li>
 			<li>
-				<a href="/shiblogin"><span class="glyphicon glyphicon-user" /> UQÀM... </a>
+				<a ui-sref="shiblogin"><span class="glyphicon glyphicon-user" /> UQÀM... </a>
 			</li>
 		</ul>
 	</li>
@@ -18,9 +18,9 @@
 			<img class='avatar avatar-icon' ng-src='{{player.avatar_url}}' />
 		</a>
 		<ul class="dropdown-menu dropdown-menu-right">
-			<li><a href="/player"><span class='glyphicon glyphicon-user' /> Profile</a></li>
+			<li><a ui-sref="player"><span class='glyphicon glyphicon-user' /> Profile</a></li>
 			<li role="separator" class="divider"></li>
-			<li><a href="/logout"><span class='glyphicon glyphicon-log-out' /> Logout</a></li>
+			<li><a ui-sref="logout"><span class='glyphicon glyphicon-log-out' /> Logout</a></li>
 		</ul>
 	</li>
 </ul>

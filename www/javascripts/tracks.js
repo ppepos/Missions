@@ -18,44 +18,79 @@
 	angular
 		.module('tracks', ['ngSanitize', 'model'])
 
-		.controller('TrackHome', ['$routeParams', '$rootScope', '$scope', function($routeParams, $rootScope, $scope) {
-			if($rootScope.session) {
-				$scope.playerId = $rootScope.session._id;
-			}
-			$scope.trackId = $routeParams.tid;
+		.controller('TrackListCtrl', ['Tracks', 'Players', '$rootScope', function(Tracks, Players, $rootScope) {
+			var vm = this;
+
+			vm.loadTrackList = function () {
+				Tracks.getTrackList(function (data) {
+					vm.trackList = data;
+					console.log(data);
+				}, function (err) {
+					console.log(err);
+				});
+			};
+
+			vm.loadTrackStatusList = function () {
+				// TODO fix API to use session in backend and remove session param and $rootScope...
+				Players.getTracksStatus($rootScope.session._id, function (data) {
+					vm.trackStatusList = data;
+				}, function (err) {
+					console.log(err);
+				});
+			};
+
+			vm.loadTrackList();
+			vm.loadTrackStatusList();
+
 		}])
 
-		.controller('TrackCtrl', ['Tracks', function(Tracks) {
-			$trackCtrl = this;
+		.controller('TrackCtrl', ['Tracks', 'Players', '$stateParams', '$rootScope', function(Tracks, Players, $stateParams, $rootScope) {
+			var vm = this;
+			vm.trackId = $stateParams.tid;
 
-			this.loadTrack = function() {
-				Tracks.getTrack(this.trackId,
+			vm.loadTrack = function() {
+				Tracks.getTrack(vm.trackId,
 					function(data) {
-						$trackCtrl.track = data;
+						vm.track = data;
 					}, function(err) {});
 			};
 
-			this.loadTrackMissions = function() {
-				Tracks.getTrackMissions(this.trackId,
+			vm.loadTrackMissions = function() {
+				Tracks.getTrackMissions(vm.trackId,
 					function(data) {
-						$trackCtrl.missions = data;
+						vm.missions = data;
 					}, function(err) {});
 			};
 
-			this.loadTrack();
-			this.loadTrackMissions();
+			vm.loadTrackStatus = function () {
+				// TODO fix API to use session in backend and remove session param and $rootScope...
+				Players.getTrackStatus($rootScope.session._id, vm.trackId, function (data) {
+					vm.trackStatus = data;
+					console.log(data);
+				}, function (err) {
+					console.log(err);
+				});
+			};
+
+			vm.loadTrack();
+			vm.loadTrackMissions();
+			vm.loadTrackStatus();
+		}])
+
+		.directive('tracks', [function() {
+			return {
+				controller: 'TrackListCtrl',
+				controllerAs: 'vm',
+				restrict: 'EA',
+				templateUrl: '/directives/tracks/tracks.html',
+			};
 		}])
 
 		.directive('track', [function() {
 			return {
-				scope: {},
-				bindToController: {
-					trackId: '='
-				},
 				controller: 'TrackCtrl',
-				controllerAs: 'trackCtrl',
+				controllerAs: 'vm',
 				restrict: 'E',
-				replace: true,
 				templateUrl: '/directives/tracks/track.html'
 			};
 		}])
@@ -170,13 +205,13 @@
 					playerId: '='
 				},
 				controller: ['Errors', 'Players', function (Errors, Players) {
-					$playerTracksCtrl = this;
-					Players.getTracksStatus(this.playerId,
+					var vm = this;
+					Players.getTracksStatus(vm.playerId,
 						function(data) {
-							$playerTracksCtrl.tracksStatus = data;
+							vm.tracksStatus = data;
 						}, Errors.handleError);
 				}],
-				controllerAs: 'tracksCtrl',
+				controllerAs: 'vm',
 				restrict: 'E',
 				replace: true,
 				templateUrl: '/directives/player/tracks.html',
@@ -192,13 +227,14 @@
 					trackId: '='
 				},
 				controller: ['Errors', 'Players', function (Errors, Players) {
-					$playerTrackCtrl = this;
-					Players.getTrackStatus(this.playerId, this.trackId,
+					var vm = this;
+					console.log(vm);
+					Players.getTrackStatus(vm.playerId, vm.trackId,
 						function(data) {
-							$playerTrackCtrl.trackStatus = data;
+							vm.trackStatus = data;
 						}, Errors.handleError);
 
-					this.hasStar = function(star, stars) {
+					vm.hasStar = function(star, stars) {
 						for(var i = 0; i < stars.__items.length; i++) {
 							var s = stars.__items[i]
 							if(s._id == star._id) return true;
@@ -206,10 +242,10 @@
 						return false;
 					};
 				}],
-				controllerAs: 'trackCtrl',
+				controllerAs: 'vm',
 				restrict: 'E',
 				replace: true,
-				templateUrl: '/directives/player/track.html',
+				templateUrl: '/directives/player/tracks.html',
 			};
 		}])
 

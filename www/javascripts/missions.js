@@ -102,21 +102,6 @@
 			};
 		}])
 
-		.directive('playerMission', [function() {
-			return {
-				scope: {},
-				bindToController: {
-					playerId: '=',
-					missionId: '='
-				},
-				controller: 'PlayerMissionCtrl',
-				controllerAs: 'missionCtrl',
-				restrict: 'E',
-				replace: true,
-				templateUrl: '/directives/player/mission.html',
-			};
-		}])
-
 		.directive('missionSubmit', [function () {
 			return {
 				transclude: true,

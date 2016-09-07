@@ -23,6 +23,7 @@ redef class APIRouter
 		use("/tracks", new APITracks(config))
 		use("/tracks/:tid", new APITrack(config))
 		use("/tracks/:tid/missions", new APITrackMissions(config))
+		use("/tracks/:tid/status", new APIPlayerTracksStatus(config))
 	end
 end
 

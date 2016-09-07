@@ -1,9 +1,9 @@
 <div>
 	<h3>Overall progress</h3>
 	<table class='table'>
-		<tr ng-repeat='status in vm.tracksStatus'>
+		<tr ng-repeat='status in vm.trackStatusList'>
 			<th width='30%'>
-				<a ui-sref=".track({ tid: vm.status.track._id })">
+				<a ui-sref=".track({ tid: status.track._id })">
 					{{status.track.title}}
 				</a>
 			</th>

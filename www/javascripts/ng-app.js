@@ -15,69 +15,98 @@
  */
 
 (function() {
-	angular.module('ng-app', ['ngRoute', 'ngSanitize', 'angular-loading-bar', 'tracks', 'missions', 'players', 'notifications', 'friends', 'achievements'])
+	angular.module('ng-app', ['ngSanitize', 'ui.router', 'ncy-angular-breadcrumb', 'angular-loading-bar', 'tracks', 'missions', 'players', 'notifications', 'friends', 'achievements'])
 
 	.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 		cfpLoadingBarProvider.includeSpinner = false;
 	}])
 
-	.config(function($routeProvider, $locationProvider) {
-		$routeProvider
-			.when('/', {
-				templateUrl: 'views/index.html',
-				controller: 'PlayersCtrl'
+	.config(function($breadcrumbProvider) {
+		$breadcrumbProvider.setOptions({
+			prefixStateName: 'home'
+		})
+	})
+
+	.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+		$stateProvider
+			.state({
+				name: 'home',
+				url: '/',
+				templateUrl: '/views/index.html',
+				controller: 'PlayersCtrl',
+				ncyBreadcrumb: {
+					label: 'Home'
+				}
 			})
-			.when('/login', {
+			.state('login', {
+				url: '/login',
 				controller : function(){
 					window.location.replace('/auth/login');
 				},
 			    template : "<div></div>"
 			})
-			.when('/shiblogin', {
+			.state('shiblogin', {
+				url: '/auth/shiblogin',
 				controller : function(){
 					window.location.replace('/auth/shiblogin');
 				},
 			    template : "<div></div>"
 			})
-			.when('/logout', {
+			.state('logout', {
+				url: '/logout',
 				controller : [ '$rootScope', function($rootScope){
 					$rootScope.player = null;
 					window.location.replace('/auth/logout');
 				}],
 			    template : "<div></div>"
 			})
-			.when('/player/', {
-				templateUrl: 'views/player.html',
-				controller : 'PlayerAuth'
+			.state('play', {
+				abstract: true,
+				templateUrl: 'views/play_base.html',
+				controller: 'PlayerAuth',
+				controllerAs: 'vm',
+				ncyBreadcrumb: {
+					label: 'Play'
+				}
 			})
-			.when('/player/tracks/:tid', {
-				templateUrl: 'views/player/track.html',
-				controller : 'PlayerAuth'
+			.state('play.tracks', {
+				url: '/tracks',
+				templateUrl: 'views/track_list.html',
+				controller: 'PlayerAuth',
+				controllerAs: 'vm',
+				ncyBreadcrumb: {
+					label: 'Track List'
+				}
 			})
-			.when('/player/missions/:mid', {
-				templateUrl: 'views/player/mission.html',
-				controller : 'PlayerAuth'
+			.state('play.tracks.track', {
+				url: '/{tid}',
+				views: {
+					'@play': {
+						templateUrl: 'views/track.html',
+						controller: 'TrackCtrl',
+						controllerAs: 'vm'
+					}
+				},
+				ncyBreadcrumb: {
+					label: 'Track'
+				}
 			})
-			.when('/players/:login', {
-				templateUrl: 'views/player.html',
-				controller : 'PlayerHome'
-			})
-			.when('/achievements/:aid', {
-				templateUrl: 'views/achievement.html',
-				controller : 'AchCtrl',
-				controllerAs : 'achCtrl'
-			})
-			.when('/tracks/:tid', {
-				templateUrl: 'views/track.html',
-				controller : 'TrackHome'
-			})
-			.when('/missions/:mid', {
-				templateUrl: 'views/mission.html',
-				controller : 'MissionHome'
-			})
-			.otherwise({
-				templateUrl: 'views/404.html',
+			.state('play.tracks.track.mission', {
+				url: '/:mid',
+				views: {
+					'@play': {
+						templateUrl: 'views/mission.html',
+						controller : 'MissionCtrl',
+						controllerAs: 'vm'
+					}
+				},
+				ncyBreadcrumb: {
+					label: 'Mission'
+				}
 			});
+
+		$urlRouterProvider.otherwise('views/404.html');
 		$locationProvider.html5Mode(true);
+
 	});
 })();

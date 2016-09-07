@@ -25,9 +25,17 @@
 			<div class='container-fluid'>
 				<div class='col-xs-8'>
 					<div class='navbar-header dropdown'>
-						<a class='navbar-brand' ng-href='/'>Missions</a>
+						<a class='navbar-brand' ui-sref='home'>Nitsions</a>
+					</div>
+					<div class='collapse navbar-collapse'>
+						<ul class='nav navbar-nav'>
+							<li ng-class="{active: $state.includes('tracks')}">
+								<a ui-sref="play.tracks">Play</a>
+							</li>
+						</ul>
 					</div>
 				</div>
+
 				<div class='col-xs-4' ng-controller='AuthCtrl as authCtrl' ng-init='authCtrl.loadSession()'>
 					<player-menu player='session'></player-menu>
 					<notifications-menu player='session' ng-if='session' />
@@ -35,9 +43,7 @@
 			</div>
 		</nav>
 
-		<div class='container-fluid'>
-			<div ng-view></div>
-		</div>
+		<ui-view></ui-view>
 
 		<script src='https://code.jquery.com/jquery-1.12.4.min.js'
 			integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ='
@@ -47,7 +53,10 @@
 			crossorigin='anonymous'></script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js'>
 		</script>
-		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.js'>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-route.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js'>
+		</script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-breadcrumb/0.4.1/angular-breadcrumb.min.js'>
 		</script>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-sanitize.js'>
 		</script>
