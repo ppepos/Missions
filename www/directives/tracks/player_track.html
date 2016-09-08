@@ -1,0 +1,60 @@
+<div>
+	<h3>{{vm.trackStatus.track.title}}</h3>
+	<table class='table'>
+		<tr>
+			<td width='60%'>
+				<div class='progress'>
+					<div class='progress-bar progress-bar-info progress-bar-striped'
+						style='width: {{vm.trackStatus.missions_success / vm.trackStatus.missions_count * 100 | number: 0}}%'>
+						<span>{{vm.trackStatus.missions_success}} / {{vm.trackStatus.missions_count}}</span>
+					</div>
+				</div>
+			</td>
+			<td>
+				{{vm.trackStatus.missions_success}} / {{vm.trackStatus.missions_count}} mission accomplished
+			</td>
+		</tr>
+		<tr>
+			<td width='60%'>
+				<div class='progress'>
+					<div class='progress-bar progress-bar-warning progress-bar-striped'
+						style='width: {{vm.trackStatus.stars_unlocked / vm.trackStatus.stars_count * 100 | number: 0}}%'>
+						<span>{{vm.trackStatus.stars_unlocked}} / {{vm.trackStatus.stars_count}}</span>
+					</div>
+				</div>
+			</td>
+			<td>
+				{{vm.trackStatus.stars_unlocked}} / {{vm.trackStatus.stars_count}} stars unlocked
+			</td>
+		</tr>
+	</table>
+
+	<div ng-bind-html="vm.trackStatus.track.desc"></div>
+	<hr>
+
+	<h4>Missions</h4>
+	<track-tree missions-status='vm.trackStatus.missions.__items' />
+	<br><br>
+
+	<table class='table'>
+		<tr ng-repeat='ms in vm.trackStatus.missions.__items'>
+			<th width='3%'>
+				<span ng-if='ms.is_locked' class='glyphicon glyphicon-lock text-muted' />
+				<span ng-if='ms.is_open' class='glyphicon glyphicon-remove text-warning' />
+				<span ng-if='ms.is_success' class='glyphicon glyphicon-ok text-success' />
+			</th>
+			<th width='30%'>
+				<a href='/missions/{{ms.mission._id}}'>
+					{{ms.mission.title}}
+				</a>
+			</th>
+			<td>
+				<span class='glyphicon'
+					title='{{self.title}}'
+					ng-repeat='self in ms.mission.stars.__items'
+					ng-class='vm.hasStar(self, ms.stars) ? "glyphicon-star text-success" :"glyphicon-star-empty text-muted"' />
+			</td>
+			<td>+ {{ms.mission.reward}} pts</td>
+		</tr>
+	</table>
+</div>

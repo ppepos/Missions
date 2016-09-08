@@ -27,7 +27,7 @@
 		})
 	})
 
-	.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+	.config(function($stateProvider, $locationProvider) {
 		$stateProvider
 			.state({
 				name: 'home',
@@ -72,7 +72,7 @@
 			.state('play.tracks', {
 				url: '/tracks',
 				templateUrl: 'views/track_list.html',
-				controller: 'PlayerAuth',
+				controller: 'PlayerTrackListCtrl',
 				controllerAs: 'vm',
 				ncyBreadcrumb: {
 					label: 'Track List'
@@ -83,7 +83,7 @@
 				views: {
 					'@play': {
 						templateUrl: 'views/track.html',
-						controller: 'TrackCtrl',
+						controller: 'PlayerTrackCtrl',
 						controllerAs: 'vm'
 					}
 				},
@@ -103,9 +103,12 @@
 				ncyBreadcrumb: {
 					label: 'Mission'
 				}
+			})
+			.state("otherwise", {
+				url: "*path",
+				templateUrl: "views/404.html"
 			});
 
-		$urlRouterProvider.otherwise('views/404.html');
 		$locationProvider.html5Mode(true);
 
 	});

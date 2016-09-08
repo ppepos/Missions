@@ -1,5 +1,5 @@
 <div>
-	<h3>{{missionCtrl.mission.title}}</h3>
+	<h3>{{vm.mission.title}}</h3>
 
 	<table class='table'>
 		<tr>
@@ -8,9 +8,9 @@
 				<span class='glyphicon glyphicon-lock text-muted' />
 				Locked
 			</th>
-			<th>+ {{missionCtrl.mission.reward}} pts</th>
+			<th>+ {{vm.mission.reward}} pts</th>
 		</tr>
-		<tr ng-repeat='star in missionCtrl.mission.stars.__items'>
+		<tr ng-repeat='star in vm.mission.stars.__items'>
 			<th ng-init='i = $index + 1' width='15%'>
 				<span class='glyphicon text-warning'
 					ng-repeat='self in [1, 2, 3]'
@@ -20,5 +20,5 @@
 			<td>{{star.title}}</td>
 		</tr>
 	</table>
-	<div ng-bind-html="missionCtrl.mission.desc"></div>
+	<div ng-bind-html="vm.mission.desc"></div>
 </div>

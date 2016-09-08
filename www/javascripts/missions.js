@@ -18,31 +18,26 @@
 	angular
 		.module('missions', ['ngSanitize', 'model'])
 
-		.controller('MissionHome', ['$routeParams', '$rootScope', '$scope', function($routeParams, $rootScope, $scope) {
-			if($rootScope.session) {
-				$scope.playerId = $rootScope.session._id;
-			}
-			$scope.missionId = $routeParams.mid;
-			$scope.mid = $scope.missionId;
-		}])
+		.controller('MissionCtrl', ['Missions', '$stateParams', function(Missions, $stateParams) {
+			var vm = this;
+			vm.missionId = $stateParams.mid;
 
-		.controller('MissionCtrl', ['Missions', function(Missions) {
-			$missionCtrl = this;
-
-			this.loadMission = function() {
-				Missions.getMission(this.missionId,
+			vm.loadMission = function() {
+				Missions.getMission(vm.missionId,
 					function(data) {
-						$missionCtrl.mission = data;
+						vm.mission = data;
 					}, function(err) {});
 			};
 
-			this.loadMission();
+			vm.loadMission();
 
 		}])
 
-		.controller('PlayerMissionCtrl', ['Errors', 'Players', '$scope', function (Errors, Players, $scope) {
+		.controller('PlayerMissionCtrl', ['Errors', 'Players', '$stateParams', '$scope', '$rootScope', function (Errors, Players, $stateParams, $scope, $rootScope) {
 
 			var vm = this;
+			vm.playerId = $rootScope.session._id;
+			vm.missionId = $stateParams.mid;
 
 			vm.getMissionStatus = function () {
 				Players.getMissionStatus(vm.playerId, vm.missionId, function(data) {
@@ -90,15 +85,25 @@
 
 		.directive('mission', [function() {
 			return {
-				scope: {},
 				bindToController: {
 					missionId: '='
 				},
 				controller: 'MissionCtrl',
-				controllerAs: 'missionCtrl',
+				controllerAs: 'vm',
 				restrict: 'E',
-				replace: true,
 				templateUrl: '/directives/missions/mission.html'
+			};
+		}])
+
+		.directive('playerMission', [function() {
+			return {
+				bindToController: {
+					missionId: '='
+				},
+				controller: 'PlayerMissionCtrl',
+				controllerAs: 'vm',
+				restrict: 'E',
+				templateUrl: '/directives/missions/player_mission.html'
 			};
 		}])
 
@@ -106,7 +111,7 @@
 			return {
 				transclude: true,
 				scope: {
-					missionId: '=missionId'
+					missionId: '='
 				},
 				restrict: 'E',
 				templateUrl: '/directives/missions/submit.html'

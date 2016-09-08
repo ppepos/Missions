@@ -18,13 +18,12 @@
 	angular
 		.module('tracks', ['ngSanitize', 'model'])
 
-		.controller('TrackListCtrl', ['Tracks', 'Players', '$rootScope', function(Tracks, Players, $rootScope) {
+		.controller('PlayerTrackListCtrl', ['Tracks', 'Players', '$rootScope', function(Tracks, Players, $rootScope) {
 			var vm = this;
 
 			vm.loadTrackList = function () {
 				Tracks.getTrackList(function (data) {
 					vm.trackList = data;
-					console.log(data);
 				}, function (err) {
 					console.log(err);
 				});
@@ -44,7 +43,8 @@
 
 		}])
 
-		.controller('TrackCtrl', ['Tracks', 'Players', '$stateParams', '$rootScope', function(Tracks, Players, $stateParams, $rootScope) {
+		.controller('PlayerTrackCtrl', ['Tracks', 'Players', '$stateParams', '$rootScope', function(Tracks, Players, $stateParams, $rootScope) {
+		console.log("test");
 			var vm = this;
 			vm.trackId = $stateParams.tid;
 
@@ -66,7 +66,6 @@
 				// TODO fix API to use session in backend and remove session param and $rootScope...
 				Players.getTrackStatus($rootScope.session._id, vm.trackId, function (data) {
 					vm.trackStatus = data;
-					console.log(data);
 				}, function (err) {
 					console.log(err);
 				});
@@ -77,21 +76,21 @@
 			vm.loadTrackStatus();
 		}])
 
-		.directive('tracks', [function() {
+		.directive('playerTracks', [function() {
 			return {
-				controller: 'TrackListCtrl',
+				controller: 'PlayerTrackListCtrl',
 				controllerAs: 'vm',
 				restrict: 'EA',
-				templateUrl: '/directives/tracks/tracks.html',
+				templateUrl: '/directives/tracks/player_track_list.html',
 			};
 		}])
 
-		.directive('track', [function() {
+		.directive('playerTrack', [function() {
 			return {
-				controller: 'TrackCtrl',
+				controller: 'PlayerTrackCtrl',
 				controllerAs: 'vm',
 				restrict: 'E',
-				templateUrl: '/directives/tracks/track.html'
+				templateUrl: '/directives/tracks/player_track.html'
 			};
 		}])
 
@@ -195,57 +194,6 @@
 						$scope.drawTree(missions);
 					})
 				}
-			};
-		}])
-
-		.directive('playerTracks', [function() {
-			return {
-				scope: {},
-				bindToController: {
-					playerId: '='
-				},
-				controller: ['Errors', 'Players', function (Errors, Players) {
-					var vm = this;
-					Players.getTracksStatus(vm.playerId,
-						function(data) {
-							vm.tracksStatus = data;
-						}, Errors.handleError);
-				}],
-				controllerAs: 'vm',
-				restrict: 'E',
-				replace: true,
-				templateUrl: '/directives/player/tracks.html',
-			};
-		}])
-
-		.directive('playerTrack', [function() {
-			return {
-				scope: {},
-				bindToController: {
-					playerUrl: '=',
-					playerId: '=',
-					trackId: '='
-				},
-				controller: ['Errors', 'Players', function (Errors, Players) {
-					var vm = this;
-					console.log(vm);
-					Players.getTrackStatus(vm.playerId, vm.trackId,
-						function(data) {
-							vm.trackStatus = data;
-						}, Errors.handleError);
-
-					vm.hasStar = function(star, stars) {
-						for(var i = 0; i < stars.__items.length; i++) {
-							var s = stars.__items[i]
-							if(s._id == star._id) return true;
-						}
-						return false;
-					};
-				}],
-				controllerAs: 'vm',
-				restrict: 'E',
-				replace: true,
-				templateUrl: '/directives/player/tracks.html',
 			};
 		}])
 
